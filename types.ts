@@ -21,6 +21,11 @@ export type EntryID = Unique<ID, "EntryID">;
 export type TExcersize = "Bench - Arms" | "Bicep Curls - Arms" | "Treadmill - Cardio"; //TODO: add the rest
 
 /**
+ * List of excersizes from the TExcersize type for use in the frontend
+ */
+export const Excersizes = ["Bench - Arms", "Bicep Curls - Arms", "Treadmill - Cardio"]; // TODO: add the rest
+
+/**
  * The date in milliseconds since the Unix epoch.
  */
 export type DateInMS = number;

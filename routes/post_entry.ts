@@ -1,5 +1,5 @@
 import Database from "../database";
-const Excersizes = require("../scripts/excersizes.js").default;
+import { Excersizes } from "../types";
 import { TExcersize, UserID } from "../types";
 import Validate from "../validate";
 
@@ -10,7 +10,7 @@ export default function post_entry(req: any, res: any): void {
   if (Database.GetUser(user_id) === null)
     return res.status(400).send({ success: false, error: `User with user_id "${user_id}" does not exist` });
 
-  if (!(excersize in Excersizes))
+  if (!Excersizes.includes(excersize))
     return res.status(400).send({ success: false, error: `Excersize "${excersize}" does not exist` });
 
   const reps = req.body?.reps;

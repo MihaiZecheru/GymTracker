@@ -9,7 +9,7 @@ export default function Validate(value: string, res: any): boolean {
 	const var_name = Object.keys({value})[0];
 
 	if (value === null || value === undefined) {
-		res.code(400).send(`${var_name} param / body value is missing`);
+		res.status(400).send(`${var_name} param / body value is missing`);
     return true;
 	}
 
