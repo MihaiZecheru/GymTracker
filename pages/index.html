@@ -44,18 +44,18 @@
       <div style="margin-top: .5rem;">
         <div class="form-outline" data-mdb-input-init>
           <input type="number" id="reps-input" class="form-control" />
-          <label class="form-label" for="reps-input">Reps</label>
+          <label class="form-label" for="reps-input" id="reps-input-label">Reps</label>
         </div>
-        <div class="form-text">
+        <div class="form-text" id="rep-info">
           Add up reps across sets
         </div>
       </div>
       <div style="margin-top: .5rem;">
         <div class="form-outline" data-mdb-input-init>
           <input type="number" id="weight-input" class="form-control" />
-          <label class="form-label" for="weight-input">Weight</label>
+          <label class="form-label" for="weight-input" id="weight-input-label">Weight</label>
         </div>
-        <div class="form-text">
+        <div class="form-text" id="weight-info">
           Weight (lbs) used for one rep
         </div>
       </div>
@@ -192,6 +192,33 @@
 
       // Post to API
       LogExcersize(selectExcersizeElement.value, repsInputElement.value, weightInputElement.value);
+    });
+  </script>
+
+  <!-- Changing inputs for cardio -->
+
+  <script>
+    document.getElementById('select-excersize').addEventListener('close.mdb.select', (e) => {
+      const excersize = e.target.value;
+      const group = excersize.split(" - ")[1];
+      
+      const repsInfo = document.getElementById('rep-info');
+      const weightInfo = document.getElementById('weight-info');
+      const repsInputLabel = document.getElementById('reps-input-label');
+      const weightInputLabel = document.getElementById('weight-input-label');
+
+      // Cardio needs special inputs
+      if (group === "Cardio") {
+        repsInfo.innerText = "Seconds, whole number";
+        weightInfo.innerText = "Miles, whole number or float";
+        repsInputLabel.innerText = "Duration";
+        weightInputLabel.innerText = "Distance";
+      } else {
+        repsInfo.innerText = "Add up reps across sets";
+        weightInfo.innerText = "Weight (lbs) used for one rep";
+        repsInputLabel.innerText = "Reps";
+        weightInputLabel.innerText = "Weight";
+      }
     });
   </script>
 
