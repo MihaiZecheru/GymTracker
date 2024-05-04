@@ -18,7 +18,7 @@ export type EntryID = Unique<ID, "EntryID">;
 /**
  * Excersizes that can be logged.
  */
-export type TExcersize = "Bench" | "Bicep Curls" | "Treadmill"; //TODO: add the rest
+export type TExcersize = "Bench - Arms" | "Bicep Curls - Arms" | "Treadmill - Cardio"; //TODO: add the rest
 
 /**
  * The date in milliseconds since the Unix epoch.
