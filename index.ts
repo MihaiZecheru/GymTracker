@@ -1,4 +1,5 @@
 import API from "./routes-api";
+import { MakeID } from "./types";
 
 const PORT = 3000;
 const express = require("express");
@@ -24,6 +25,10 @@ app.get("/login", (req: any, res: any) => {
 
 app.get("/favicon.ico", (req: any, res: any) => {
   return res.sendFile(__dirname + "/favicon.ico");
+});
+
+app.get("/favicon.png", (req: any, res: any) => {
+  return res.sendFile(__dirname + "/favicon.png");
 });
 
 app.get("/scripts/*", (req: any, res: any) => {
