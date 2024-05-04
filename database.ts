@@ -9,8 +9,8 @@ import sqlite3 from 'sqlite3';
  * @param date Date to log the entry (int)
  * @returns The created excersize-entry
  */
-function MakeIEntry(reps: number, weight_per_rep: number, date: DateInMS): IEntry {
-	return { entry_id: MakeID(), reps, weight_per_rep, weight_sum: reps * weight_per_rep, date, } as IEntry;
+async function MakeIEntry(reps: number, weight_per_rep: number, date: DateInMS): Promise<IEntry> {
+	return { entry_id: await MakeID(), reps, weight_per_rep, weight_sum: reps * weight_per_rep, date, } as IEntry;
 }
 
 /**
@@ -116,12 +116,55 @@ export default abstract class Database {
    * @param weight_per_rep The amount of weight that was lifted per rep (float)
    */
 	public static async AddEntry(user_id: UserID, excersize: TExcersize, reps: number, weight_per_rep: number): Promise<void> {
-		const entry: IEntry = MakeIEntry(reps, weight_per_rep, Date.now());
+		const entry: IEntry = await MakeIEntry(reps, weight_per_rep, Date.now());
     await this.PostEntryToDB(entry);
 		let entry_collection: IEntryCollection = await this.GetEntryCollection(user_id, excersize);
     if (!entry_collection) this.MakeEntryCollection(user_id, excersize);
 		this.UpdateEntryCollection(user_id, excersize, entry.entry_id);
 	}
+
+  /**
+   * Check to see if the given <id> has not yet been used in the database.
+   * @param id The ID to check for availability
+   */
+  public static async IDAvailable(id: string): Promise<boolean> {
+    const excersizeEntry = new Promise((resolve) => {
+      this.db.get(`SELECT * FROM ExcersizeEntry WHERE entry_id = ?`, id, (err, row) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+  
+        resolve(row === undefined);
+      });
+    });
+
+    const excersizeEntryCollection = new Promise((resolve) => {
+      this.db.get(`SELECT * FROM ExcersizeEntryCollection WHERE entry_id = ?`, id, (err, row) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+  
+        resolve(row === undefined);
+      });
+    });
+
+    const users = new Promise((resolve) => {
+      this.db.get(`SELECT * FROM Users WHERE user_id = ?`, id, (err, row) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+  
+        resolve(row === undefined);
+      });
+    });
+
+    return await Promise.all([excersizeEntry, excersizeEntryCollection, users]).then((r) => {
+      return r.every((available) => available === true);
+    });
+  }
 }
 
 // TODO: add tests

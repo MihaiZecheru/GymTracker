@@ -1,3 +1,5 @@
+import Database from "./database";
+
 type Unique<T, UniqueTypeName> = T & { __TYPE__: UniqueTypeName };
 
 /**
@@ -51,10 +53,10 @@ function _gen_ID(): ID {
 /**
  * Make a new ID that does not already exist.
  */
-export function MakeID(): ID {
+export async function MakeID(): Promise<ID> {
 	while (true) {
 		const id: ID = _gen_ID();
-		// TODO: check if ID does not already exist
+		if (!(await Database.IDAvailable(id))) continue;
 		return id;
 	}
 }
