@@ -1,5 +1,4 @@
-import { deleteCookie } from 'undici-types';
-import { addCookie, getCookie } from './cookies.js';
+import { addCookie, getCookie, deleteCookie } from './cookies.js';
 
 export function check_login() {
   const login_cookie = getCookie('login');
