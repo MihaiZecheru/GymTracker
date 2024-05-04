@@ -1,7 +1,7 @@
-import Database from "../database.ts";
-import Excersizes from "../scripts/excersizes.js";
+import Database from "../database";
+const Excersizes = require("../scripts/excersizes.js").default;
 import { TExcersize, UserID } from "../types";
-import Validate from "../validate.ts";
+import Validate from "../validate";
 
 export default function post_entry(req: any, res: any): void {
   const user_id = req.params.user_id;
