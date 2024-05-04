@@ -98,7 +98,7 @@ export default abstract class Database {
    */
   public static async PostEntryToDB(entry: IEntry): Promise<void> {
     return new Promise((resolve) => {
-      this.db.run(`INSERT INTO ExcersizeEntries (entry_id, reps, weight_per_rep, weight_sum, date) VALUES (?, ?, ?, ?, ?)`, entry.entry_id, entry.reps, entry.weight_per_rep, entry.weight_sum, entry.date, (err: Error | null) => {
+      this.db.run(`INSERT INTO ExcersizeEntry (entry_id, reps, weight_per_rep, weight_sum, date) VALUES (?, ?, ?, ?, ?)`, entry.entry_id, entry.reps, entry.weight_per_rep, entry.weight_sum, entry.date, (err: Error | null) => {
         if (err) {
           console.error(err);
           throw err;
