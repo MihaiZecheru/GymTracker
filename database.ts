@@ -9,7 +9,7 @@ import sqlite3 from 'sqlite3';
  * @param date Date to log the entry (int)
  * @returns The created excersize-entry
  */
-function MakeEntry(reps: number, weight_per_rep: number, date: DateInMS): IEntry {
+function MakeIEntry(reps: number, weight_per_rep: number, date: DateInMS): IEntry {
 	return { entry_id: MakeID(), reps, weight_per_rep, weight_sum: reps * weight_per_rep, date, } as IEntry;
 }
 
@@ -93,13 +93,30 @@ export default abstract class Database {
   }
 
   /**
+   * Post an IEntry to the database
+   * @param entry The entry to post to the database. Must be made with the MakeIEntry function
+   */
+  public static async PostEntryToDB(entry: IEntry): Promise<void> {
+    return new Promise((resolve) => {
+      this.db.run(`INSERT INTO ExcersizeEntries (entry_id, reps, weight_per_rep, weight_sum, date) VALUES (?, ?, ?, ?, ?)`, entry.entry_id, entry.reps, entry.weight_per_rep, entry.weight_sum, entry.date, (err: Error | null) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+
+        resolve();
+      });
+    });
+  }
+
+  /**
    * Add an entry to the database and update the entry collection it belongs to
    * @param excersize The excersize that was done
    * @param reps The amount of reps that were done (int)
    * @param weight_per_rep The amount of weight that was lifted per rep (float)
    */
 	public static async AddEntry(user_id: UserID, excersize: TExcersize, reps: number, weight_per_rep: number): Promise<void> {
-		const entry: IEntry = MakeEntry(reps, weight_per_rep, Date.now());
+		const entry: IEntry = MakeIEntry(reps, weight_per_rep, Date.now());
     await this.PostEntryToDB(entry);
 		let entry_collection: IEntryCollection = await this.GetEntryCollection(user_id, excersize);
     if (!entry_collection) this.MakeEntryCollection(user_id, excersize);
