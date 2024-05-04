@@ -10,6 +10,7 @@ express.json();
 
 app.get("/api/user/:user_id", API.get_user_by_id);
 app.get("/api/user/:user_id/entries/:excersize", API.get_entry_collection);
+app.post("/api/user/:user_id/entries/:excersize", API.post_entry);
 
 /** Website **/
 
