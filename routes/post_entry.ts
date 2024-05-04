@@ -16,10 +16,10 @@ export default function post_entry(req: any, res: any): void {
   const reps = req.body?.reps;
   const weight = req.body?.weight;
 
-  if (Validate(user_id, res)) return;
-  if (Validate(excersize, res)) return;
-  if (Validate(reps, res)) return;
-  if (Validate(weight, res)) return;
+  if (Validate(user_id, "user_id", res)) return;
+  if (Validate(excersize, "excersize", res)) return;
+  if (Validate(reps, "reps", res)) return;
+  if (Validate(weight, "weight", res)) return;
 
   Database.AddEntry(user_id as UserID, excersize as TExcersize, reps, weight);
   return res.status(200).send({ success: true });
