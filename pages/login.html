@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%!important">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,40 @@
   <script type="text/javascript" src="../mdbootstrap/plugins/js/all.min.js" defer></script>
   <title>Gym Tracker | Login</title>
 </head>
-<body>
-  Hello
+<body style="height: 100%!important">
+  <main style="display: flex; justify-content: center; height: 100%!important; align-items: center;">
+    <div>
+      <div style="display: flex; justify-content: center; margin-bottom: .5rem;">
+        <img src="/favicon.png" alt="app icon" height="100px"/>
+      </div>
+      <select data-mdb-select-init id="select-user">
+        <option value="NULL">Select User</option>
+        <option value="PxU7pwSC">Chris</option>
+        <option value="xmILl6vb">Erin</option>
+        <option value="5qJjkBYh">Daria</option>
+      </select>
+      <button id="login-btn" class="btn btn-primary" style="width: 100%; margin-top: .5rem;">Login</button>
+    </div>
+  </main>
+  <script type="module">
+    const USERS = {
+      'PxU7pwSC': 'Chris',
+      'xmILl6vb': 'Erin',
+      '5qJjkBYh': 'Daria'
+    };
+
+    const selectUserElement = document.getElementById('select-user');
+    new mdb.Select(selectUserElement);
+    selectUserElement.children[0].disabled = true;
+
+    import { addCookie } from "../scripts/cookies.js"
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const selectedUserId = selectUserElement.value;
+      if (selectedUserId === 'NULL') return;
+      addCookie('login', JSON.stringify({ user_id: selectedUserId, username: USERS[selectedUserId] }), 1);
+      window.location.href = '/';
+    });
+  </script>
 </body>
 </html>
