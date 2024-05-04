@@ -4,7 +4,7 @@ import { MakeID } from "./types";
 const PORT = 3000;
 const express = require("express");
 const app = express();
-express.json();
+app.use(express.json());
 
 /** API **/
 
