@@ -1,5 +1,6 @@
 import { IEntry, IEntryCollection, IUser } from "./database-types";
 import { DateInMS, EntryID, MakeID, TExcersize, UserID } from "./types";
+import sqlite3 from 'sqlite3';
 
 /**
  * Create a new excersize-entry in the database
@@ -9,15 +10,15 @@ import { DateInMS, EntryID, MakeID, TExcersize, UserID } from "./types";
  * @returns The created excersize-entry
  */
 function MakeEntry(reps: number, weight_per_rep: number, date: DateInMS): IEntry {
-	const entry: IEntry = { entry_id: MakeID(), reps, weight_per_rep, weight_sum: reps * weight_per_rep, date, } as IEntry;
-  // TODO: add to database
-  return entry;
+	return { entry_id: MakeID(), reps, weight_per_rep, weight_sum: reps * weight_per_rep, date, } as IEntry;
 }
 
 /**
  * Database schema consists of a table of users, a table of entries, and a table of entry collections.
  **/
 export default abstract class Database {
+  private static db = new sqlite3.Database('./gym.db');
+
   /**
    * Get a user from the database
    */
