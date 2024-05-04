@@ -64,7 +64,7 @@ export default abstract class Database {
     entry_collection.entries.push(entry_id);
     
     return new Promise((resolve) => {
-      this.db.run(`UPDATE ExcersizeEntryCollection SET entries = ? WHERE user_id = ? AND excersize = ?`, JSON.stringify(entry_collection), user_id, excersize, (err: Error | null) => {
+      this.db.run(`UPDATE ExcersizeEntryCollection SET entries = ? WHERE user_id = ? AND excersize = ?`, JSON.stringify(entry_collection.entries), user_id, excersize, (err: Error | null) => {
         if (err) {
           console.error(err);
           throw err;
@@ -123,4 +123,5 @@ export default abstract class Database {
 		this.UpdateEntryCollection(user_id, excersize, entry.entry_id);
 	}
 }
-Database.GetUser("5qJjkBYh" as UserID).then(console.log);
+
+// TODO: add tests
