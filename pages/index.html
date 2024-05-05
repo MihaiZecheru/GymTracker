@@ -117,7 +117,9 @@
       excersizesSorted[group].push(excersize);
     });
 
-    Object.keys(excersizesSorted).forEach((group) => {
+    const groups = Object.keys(excersizesSorted);
+    groups.sort();
+    groups.forEach((group) => {
       const optgroup = document.createElement('optgroup');
       optgroup.label = group;
       selectExcersizeElement.appendChild(optgroup);
