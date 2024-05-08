@@ -139,17 +139,6 @@ export default abstract class Database {
       });
     });
 
-    const excersizeEntryCollection = new Promise((resolve) => {
-      this.db.get(`SELECT * FROM ExcersizeEntryCollection WHERE entry_id = ?`, id, (err, row) => {
-        if (err) {
-          console.error(err);
-          throw err;
-        }
-  
-        resolve(row === undefined);
-      });
-    });
-
     const users = new Promise((resolve) => {
       this.db.get(`SELECT * FROM Users WHERE user_id = ?`, id, (err, row) => {
         if (err) {
