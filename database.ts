@@ -150,7 +150,7 @@ export default abstract class Database {
       });
     });
 
-    return await Promise.all([excersizeEntry, excersizeEntryCollection, users]).then((r) => {
+    return await Promise.all([excersizeEntry, users]).then((r) => {
       return r.every((available) => available === true);
     });
   }
