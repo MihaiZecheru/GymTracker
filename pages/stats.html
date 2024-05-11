@@ -28,7 +28,211 @@
 
   <main style="height: 100%!important; display: flex; justify-content: center; align-items: center;">
     <!-- Dropdown menu allows user to pick an excersize to view stats for -->
-    
+    <div>
+      <div>
+        <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+          <a href="/">
+            <img src="/favicon.png" alt="app icon" height="100px" />
+          </a>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <select data-mdb-select-init id="select-excersize" data-mdb-filter="true">
+          <option value="NULL" hidden selected>Select Excersize</option>
+        </select>
+        <div class="form-check" style="margin-left: .5rem">
+          <input class="form-check-input" type="checkbox" value="" id="simplify-selection" />
+        </div>
+      </div>
+      <div>
+        <!-- Example split primary button -->
+        <div class="btn-group" style="width: 100%; margin-top: .5rem">
+          <button id="graph-excersize-btn" type="button" class="btn btn-success">Graph Excersize</button>
+          <button id="graph-excersize-dropdown" type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown Arrow</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="include-reps" />
+                <label class="form-check-label" for="include-reps">Reps</label>
+              </div>
+            </a></li>
+            <li><a class="dropdown-item">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="include-weight" />
+                <label class="form-check-label" for="include-weight">Weight</label>
+              </div>
+            </a></li>
+            <li><a class="dropdown-item">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="include-weight-sum" />
+                <label class="form-check-label" for="include-weight-sum">Weight Sum</label>
+              </div>
+            </a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="include-comparison" />
+                <label class="form-check-label" for="include-comparison">Compare</label>
+              </div>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
   </main>
+
+  <!-- excersize-selection menu setup -->
+
+  <script type="module">
+    import { getCookie } from '/scripts/cookies.js';
+    import Excersizes from "/scripts/excersizes.js";
+    
+    (async () => {
+      const selectExcersizeElement = document.getElementById('select-excersize');
+      new mdb.Select(selectExcersizeElement);
+      selectExcersizeElement.children[0].disabled = true;
+  
+      let excersizes = Excersizes;
+  
+      // If the user has selected to simplify the selection, fetch the simplified excersizes
+      if (localStorage.getItem("simplify-selection") === 'true') {
+        document.getElementById("simplify-selection").checked = true;
+        const user_id = JSON.parse(getCookie("login")).user_id;
+        excersizes = await fetch(`/api/simplified-excersizes/${user_id}`).then((response) => response.json()).then((data) => data.excersizes)
+          .catch((error) => { localStorage.removeItem("simplify-selection"); window.location.reload(); });
+      }
+  
+      /**
+       * Sort the excersizes into groups, ie. arms, legs, back, etc.
+       */
+  
+      const excersizesSorted = { };
+  
+      excersizes.forEach((_excersize) => {
+        const excersizeAndGroup = _excersize.split(" - ");
+        const excersize = excersizeAndGroup[0];
+        const group = excersizeAndGroup[1];
+  
+        excersizesSorted[group] = excersizesSorted[group] || [];
+        excersizesSorted[group].push(excersize);
+      });
+  
+      const groups = Object.keys(excersizesSorted);
+      groups.sort();
+      groups.forEach((group) => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group;
+        selectExcersizeElement.appendChild(optgroup);
+  
+        excersizesSorted[group].forEach((excersize) => {
+          const option = document.createElement('option');
+          option.value = `${excersize} - ${group}`;
+          option.innerText = excersize;
+          optgroup.appendChild(option);
+        });
+      });
+    })();
+  </script>
+
+  <!-- graph excersize dropdown -->
+
+  <script type="module">
+    const graphExcersizeDropdownElement = document.getElementById('graph-excersize-dropdown');
+    
+    graphExcersizeDropdownElement.addEventListener("click", () => {
+      new mdb.Dropdown(graphExcersizeDropdownElement).toggle();
+    });
+  </script>
+
+  <!-- Make it so that when you click one of the options in the dropdown, it checks the corresponding checkbox, so your clicks don't have to be as accurate -->
+
+  <script>
+    document.querySelectorAll(".form-check").forEach((formCheck) => {
+      formCheck.addEventListener("click", () => {
+        const checkbox = formCheck.querySelector("input");
+        if (checkbox.id === "simplify-selection") return;
+        checkbox.checked = !checkbox.checked;
+      });
+    });
+  </script>
+
+  <!-- validation / graph-excersize btn press -->
+
+  <script type="module">
+    import { getCookie } from '/scripts/cookies.js';
+
+    async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison) {
+      return fetch(`/api/stats/${user_id}/${excersize}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          includeReps,
+          includeWeight,
+          includeWeightSum,
+          includeComparison
+        })
+      })
+      .then((response) => response.json())
+      .then((data) => data.graph_url);
+    }
+
+    document.getElementById("graph-excersize-btn").addEventListener("click", () => {
+      // Get elements
+      const selectExcersizeElement = document.getElementById('select-excersize');
+      const graphExcersizeButtonElement = document.getElementById('graph-excersize-btn');
+      const includeRepsCheckboxElement = document.getElementById('include-reps');
+      const includeWeightCheckboxElement = document.getElementById('include-weight');
+      const includeWeightSumCheckboxElement = document.getElementById('include-weight-sum');
+      const includeComparisonCheckboxElement = document.getElementById('include-comparison');
+
+      // excersize-selection Validation
+      if (selectExcersizeElement.value === "NULL") {
+        selectExcersizeElement.classList.add('is-invalid');
+        return;
+      }
+
+      selectExcersizeElement.classList.remove('is-invalid');
+
+      // Get excersize
+      const excersize = selectExcersizeElement.value;
+
+      // Get graph modifiers (checkboxes)
+      const includeReps = includeRepsCheckboxElement.checked;
+      const includeWeight = includeWeightCheckboxElement.checked;
+      const includeWeightSum = includeWeightSumCheckboxElement.checked;
+      const includeComparison = includeComparisonCheckboxElement.checked;
+
+      // Get user id
+      const user_id = JSON.parse(getCookie("login")).user_id;
+
+      // Have the server make the graph with the given parameters
+      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison).then((graph_url) => { window.location.href = graph_url });
+    });
+  </script>
+
+  <!-- Simplify selection checkbox -->
+
+  <style>
+    .form-check-input[type=checkbox]:checked,
+    .form-check-input[type=checkbox]:checked:focus {
+      background-color: var(--mdb-success);
+      border-color: var(--mdb-success);
+    }
+  </style>
+
+  <script>
+    document.getElementById("simplify-selection").addEventListener("input", () => {
+      const selectExcersizeElement = document.getElementById('select-excersize');
+      const simplifySelectionElement = document.getElementById('simplify-selection');
+      localStorage.setItem("simplify-selection", simplifySelectionElement.checked);
+      window.location.reload();
+    });
+  </script>
+
 </body>
 </html>
