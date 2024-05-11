@@ -11,6 +11,8 @@ app.use(express.json());
 app.get("/api/user/:user_id", API.get_user_by_id);
 app.get("/api/user/:user_id/entries/:excersize", API.get_entry_collection);
 app.post("/api/user/:user_id/entries/:excersize", API.post_entry);
+app.post("/api/stats/:user_id/:excersize", API.make_graph);
+app.get("/api/simplified-excersizes/:user_id", API.get_simplified_excersizes);
 
 /** Website **/
 

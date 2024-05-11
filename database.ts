@@ -154,6 +154,40 @@ export default abstract class Database {
       return r.every((available) => available === true);
     });
   }
+
+  /**
+   * Get a list of entries from the database using the given IDs
+   * @param entry_ids The IDs of the entries to get from the database
+   */
+  public static async GetEntriesWithIDs(entry_ids: Array<EntryID>): Promise<Array<IEntry>> {
+    return new Promise((resolve) => {
+      this.db.all(`SELECT * FROM ExcersizeEntry WHERE entry_id IN (${entry_ids.map((id) => `'${id}'`).join(", ")})`, (err, rows) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+
+        resolve(rows as Array<IEntry>);
+      });
+    });
+  }
+
+  /**
+   * Get all entry collections for a given user
+   * @param user_id The user to get the entry collections for
+   */
+  public static async GetAllEntryCollections(user_id: UserID): Promise<Array<IEntryCollection>> {
+    return new Promise((resolve) => {
+      this.db.all(`SELECT * FROM ExcersizeEntryCollection WHERE user_id = ?`, user_id, (err, rows) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+
+        resolve(rows as Array<IEntryCollection>);
+      });
+    });
+  }
 }
 
 // TODO: add tests
