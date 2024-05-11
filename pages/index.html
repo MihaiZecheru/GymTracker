@@ -30,14 +30,9 @@
     <div>
       <div>
         <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-          <a href="/stats-selection">
+          <a href="/stats">
             <img src="/favicon.png" alt="app icon" height="100px" />
           </a>
-          <script type="module">
-            import { getCookie } from "/scripts/cookies.js";
-            const user_id = JSON.parse(getCookie('login')).user_id;
-            document.querySelector('a').href = `/stats/${user_id}`;
-          </script>
         </div>
       </div>
       <div>
