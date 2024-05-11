@@ -165,7 +165,7 @@
     import { getCookie } from '/scripts/cookies.js';
 
     async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison) {
-      return fetch(`/api/stats/${user_id}/${excersize}`, {
+      return await fetch(`/api/stats/${user_id}/${excersize}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -178,7 +178,17 @@
         })
       })
       .then((response) => response.json())
-      .then((data) => data.graph_url);
+      .then((data) => data.graph_url)
+      .catch((error) => {
+        // TODO: add error handling
+        if (error === `No entry collection exists for excersize "${excersize}" for user with user_id "${user_id}"`) {
+          // TODO: add modal
+          alert(`No data exists for the selected excersize (${excersize})`);
+        } else {
+          alert("An error occurred while trying to make the graph");
+          // TODO: add modal
+        }
+      });
     }
 
     document.getElementById("graph-excersize-btn").addEventListener("click", () => {
