@@ -8,6 +8,6 @@ const Excersizes = ["Seated Leg Press - Legs", "Hip Adduction - Legs", "Hip Abdu
 													 "Knee Flexion - Legs", "Hip Extension - Legs", "Knee Flexion Hip Extension - Legs", "Cycling Motion - Legs", "Forward Step - Legs", "Side Step - Legs", "Step With Arm Curl - Arms", "Step With Shoulder Press - Shoulders", "Straight Leg Calf Press - Legs", "Bent Knee Press - Legs", "Basic Squat - Legs",
 													 "Squat With Hips Off Back Pad - Legs", "Split Stance Squat - Legs", "Squat With One Leg Only - Legs", "ISOL High Row - Back", "ISOL Incline Press - Chest", "ISOL Shoulder Press - Shoulders",
 													 "Triceps Press - Arms", "Back Extension - Back", "Fixed Pulldown - Arms", "Shoulder Press - Shoulders", "Seated Row - Back", "Pectoral Fly - Chest", "Rear Deltoid - Shoulders", "Assisted Dip - Arms", "Biceps Curl - Arms", "Biceps Extension - Arms", "Push Ups - Arms", "Pull Ups - Arms", "Plank - Core", "Bench Press - Arms",
-													 "Dumbbell Bicep Curl - Arms", "Dumbbell Behind Head - Arms", "Dumbbells Lift - Arms", "Sit Ups - Core", "Curl Ups - Core", "Treadmill - Cardio", "Stair Climber - Cardio"];
+													 "Dumbbell Bicep Curl - Arms", "Dumbbell Behind Head - Arms", "Dumbbells Lift - Arms", "Sit Ups - Core", "Curl Ups - Core", "Treadmill - Cardio", "Stair Climber - Cardio", "Ladder Climb - Cardio"];
 Excersizes.sort();
 export default Excersizes;
