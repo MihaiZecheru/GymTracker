@@ -235,13 +235,15 @@
     }
   </style>
 
-  <script>
+  <script type="module">
     document.getElementById("simplify-selection").addEventListener("input", () => {
       const selectExcersizeElement = document.getElementById('select-excersize');
       const simplifySelectionElement = document.getElementById('simplify-selection');
       localStorage.setItem("simplify-selection", simplifySelectionElement.checked);
       window.location.reload();
     });
+
+    new mdb.Tooltip(document.getElementById("simplify-selection"));
   </script>
 
 </body>
