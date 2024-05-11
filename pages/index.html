@@ -261,5 +261,12 @@
     });
   </script>
 
+  <!-- reload page after modal close to prevent glitch with the excersize selection input not clearing -->
+
+  <script>
+    document.getElementById("log-excersize-success-modal").addEventListener("hidden.bs.modal", () => window.location.reload());
+    document.getElementById("log-excersize-failure-modal").addEventListener("hidden.bs.modal", () => window.location.reload());
+  </script>
+
 </body>
 </html>
