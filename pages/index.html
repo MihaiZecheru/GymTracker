@@ -181,6 +181,10 @@
         } else {
           new mdb.Modal(document.getElementById('log-excersize-failure-modal')).show();
         }
+      })
+      .catch((error) => {
+        // Show failure modal in case of network error
+        new mdb.Modal(document.getElementById('log-excersize-failure-modal')).show();
       });
     }
 
@@ -263,11 +267,15 @@
     new mdb.Tooltip(document.getElementById("simplify-selection"));
   </script>
 
-  <!-- reload page after modal close to prevent glitch with the excersize selection input not clearing -->
+  <!-- reset excersize selectionon modal close to prevent glitch with the excersize selection input not clearing -->
 
   <script>
-    document.getElementById("log-excersize-success-modal").addEventListener("hidden.bs.modal", () => window.location.href = "/");
-    document.getElementById("log-excersize-failure-modal").addEventListener("hidden.bs.modal", () => window.location.href = "/");
+    document.getElementById("log-excersize-success-modal").addEventListener("hidden.bs.modal", () => {
+      document.getElementById('select-excersize').value = "NULL";
+    });
+    document.getElementById("log-excersize-failure-modal").addEventListener("hidden.bs.modal", () => {
+      document.getElementById('select-excersize').value = "NULL";
+    });
   </script>
 
 </body>
