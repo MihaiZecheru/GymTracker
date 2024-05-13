@@ -200,14 +200,14 @@
 
       selectExcersizeElement.classList.remove('is-invalid');
 
-      if (repsInputElement.value === "" || !isNumber(repsInputElement.value) || parseInt(repsInputElement.value) <= 0 || Number.isInteger((repsInputElement.value))) {
+      if (repsInputElement.value === "" || !isNumber(repsInputElement.value) || parseFloat(repsInputElement.value) <= 0.0 || Number.isInteger(repsInputElement.value)) {
         repsInputElement.classList.add('is-invalid');
         return;
       }
 
       repsInputElement.classList.remove('is-invalid');
-
-      if (weightInputElement.value === "" || !isNumber(weightInputElement.value) || parseInt(weightInputElement.value) <= 0) {
+      
+      if (weightInputElement.value === "" || !isNumber(weightInputElement.value) || parseFloat(weightInputElement.value) <= 0.0) {
         weightInputElement.classList.add('is-invalid');
         return;
       }
@@ -221,7 +221,9 @@
 
   <!-- Changing inputs for cardio -->
 
-  <script>
+  <script type="module">
+    import { WEIGHT_DISABLED_EXCERSIZES } from '/scripts/excersizes.js';
+
     document.getElementById('select-excersize').addEventListener('close.mdb.select', (e) => {
       const excersize = e.target.value;
       const group = excersize.split(" - ")[1];
@@ -230,18 +232,28 @@
       const weightInfo = document.getElementById('weight-info');
       const repsInputLabel = document.getElementById('reps-input-label');
       const weightInputLabel = document.getElementById('weight-input-label');
+      const weightInput = document.getElementById('weight-input');
 
       // Cardio needs special inputs
       if (group === "Cardio") {
-        repsInfo.innerText = "Seconds, whole number";
-        weightInfo.innerText = "Miles, whole number or float";
+        repsInfo.innerHTML = "<b>Seconds</b>, whole number";
+        weightInfo.innerHTML = "<b>Miles</b>, whole number or float";
         repsInputLabel.innerText = "Duration";
         weightInputLabel.innerText = "Distance";
       } else {
-        repsInfo.innerText = "Add up reps across sets";
-        weightInfo.innerText = "Weight (lbs) used for one rep";
+        repsInfo.innerHTML = "Add up reps <b>across sets</b>";
+        weightInfo.innerHTML = "Weight (<b>lbs</b>) used for one rep";
         repsInputLabel.innerText = "Reps";
         weightInputLabel.innerText = "Weight";
+      }
+
+      // Special inputs without weight input, like core ball
+      // Disable the weight input for these excersizes and update the weightInfo text
+      if (excersize in WEIGHT_DISABLED_EXCERSIZES) {
+        weightInfo.innerHTML = "No weight needed";
+        weightInput.disabled = true;
+      } else {
+        weightInput.disabled = false;
       }
     });
   </script>

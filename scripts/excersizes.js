@@ -11,3 +11,5 @@ const Excersizes = ["Seated Leg Press - Legs", "Hip Adduction - Legs", "Hip Abdu
 													 "Dumbbell Bicep Curl - Arms", "Dumbbell Behind Head - Arms", "Dumbbells Lift - Arms", "Sit Ups - Core", "Curl Ups - Core", "Treadmill - Cardio", "Stair Climber - Cardio", "Ladder Climb - Cardio"];
 Excersizes.sort();
 export default Excersizes;
+
+const WEIGHT_DISABLED_EXCERSIZES = ["Plank - Core", "Sit Ups - Core", "Curl Ups - Core", "Push Ups - Arms", "Pull Ups - Arms"];
