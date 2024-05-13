@@ -1,5 +1,4 @@
 import API from "./routes-api";
-import { MakeID } from "./types";
 
 const PORT = 3000;
 const express = require("express");
