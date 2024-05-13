@@ -12,4 +12,4 @@ const Excersizes = ["Seated Leg Press - Legs", "Hip Adduction - Legs", "Hip Abdu
 Excersizes.sort();
 export default Excersizes;
 
-const WEIGHT_DISABLED_EXCERSIZES = ["Plank - Core", "Sit Ups - Core", "Curl Ups - Core", "Push Ups - Arms", "Pull Ups - Arms"];
+export const WEIGHT_DISABLED_EXCERSIZES = ["Plank - Core", "Sit Ups - Core", "Curl Ups - Core", "Push Ups - Arms", "Pull Ups - Arms"];
