@@ -226,7 +226,7 @@
       /* Post to API */
 
       // If the excersize is a weight-disabled excersize
-      if (selectExcersizeElement.value in WEIGHT_DISABLED_EXCERSIZES) {
+      if (WEIGHT_DISABLED_EXCERSIZES.includes(selectExcersizeElement.value)) {
         LogWeightDisabledExcersize(selectExcersizeElement.value, repsInputElement.value);
       // If the excersize is a cardio excersize
       } else if (selectExcersizeElement.value.split(" - ")[1] === "Cardio") {
@@ -245,6 +245,7 @@
 
     document.getElementById('select-excersize').addEventListener('close.mdb.select', (e) => {
       const excersize = e.target.value;
+      if (excersize === "NULL" || !excersize) return;
       const group = excersize.split(" - ")[1];
       
       const repsInfo = document.getElementById('rep-info');
@@ -266,9 +267,17 @@
         weightInputLabel.innerText = "Weight";
       }
 
+      if (excersize === "Stair Climb - Cardio") {
+        repsInfo.innerHTML = "<b>Seconds</b>, whole number";
+        weightInfo.innerHTML = "<b>Steps</b>, whole number";
+        repsInputLabel.innerText = "Duration";
+        weightInputLabel.innerText = "Steps";
+      }
+
       // Special inputs without weight input, like core ball
       // Disable the weight input for these excersizes and update the weightInfo text
-      if (excersize in WEIGHT_DISABLED_EXCERSIZES) {
+      // if (excersize in WEIGHT_DISABLED_EXCERSIZES) {
+      if (WEIGHT_DISABLED_EXCERSIZES.includes(excersize)) {
         weightInfo.innerHTML = "No weight needed";
         weightInput.disabled = true;
       } else {
