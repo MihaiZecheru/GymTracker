@@ -155,19 +155,20 @@
 
   <script type="module">
     import { getCookie } from "../scripts/cookies.js";
+    import { WEIGHT_DISABLED_EXCERSIZES } from '/scripts/excersizes.js';
 
     function isNumber(n) {
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
-    function LogExcersize(excersize, reps, weight) {
+    function LogNormalExcersize(excersize, reps, weight, noSum = false, noWeight = false) {
       const user_id = JSON.parse(getCookie('login')).user_id;
       fetch(`/api/user/${user_id}/entries/${excersize}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reps, weight })
+        body: JSON.stringify({ reps, weight, noSum, noWeight })
       }).then((res) => res.json())
       .then((res) => {
         if (res.success) {
@@ -186,6 +187,14 @@
         // Show failure modal in case of network error
         new mdb.Modal(document.getElementById('log-excersize-failure-modal')).show();
       });
+    }
+
+    function LogCardioExcersize(excersize, time, distance) {
+      LogNormalExcersize(excersize, time, distance, true, false);
+    }
+
+    function LogWeightDisabledExcersize(excersize, reps) {
+      LogNormalExcersize(excersize, reps, 999, false, true);
     }
 
     document.getElementById("log-excersize-btn").addEventListener("click", () => {
@@ -214,8 +223,18 @@
 
       weightInputElement.classList.remove('is-invalid');
 
-      // Post to API
-      LogExcersize(selectExcersizeElement.value, repsInputElement.value, weightInputElement.value);
+      /* Post to API */
+
+      // If the excersize is a weight-disabled excersize
+      if (selectExcersizeElement.value in WEIGHT_DISABLED_EXCERSIZES) {
+        LogWeightDisabledExcersize(selectExcersizeElement.value, repsInputElement.value);
+      // If the excersize is a cardio excersize
+      } else if (selectExcersizeElement.value.split(" - ")[1] === "Cardio") {
+        LogCardioExcersize(selectExcersizeElement.value, repsInputElement.value, weightInputElement.value);
+      // If the excersize is not one of the other two (normal excersizes)
+      } else {
+        LogNormalExcersize(selectExcersizeElement.value, repsInputElement.value, weightInputElement.value);
+      }
     });
   </script>
 

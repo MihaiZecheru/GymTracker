@@ -115,8 +115,9 @@ export default abstract class Database {
    * @param reps The amount of reps that were done (int)
    * @param weight_per_rep The amount of weight that was lifted per rep (float)
    */
-	public static async AddEntry(user_id: UserID, excersize: TExcersize, reps: number, weight_per_rep: number): Promise<void> {
+	public static async AddEntry(user_id: UserID, excersize: TExcersize, reps: number, weight_per_rep: number, noSum: boolean = false): Promise<void> {
 		const entry: IEntry = await MakeIEntry(reps, weight_per_rep, Date.now());
+    if (noSum) entry.weight_sum = -1;
     await this.PostEntryToDB(entry);
 		let entry_collection: IEntryCollection = await this.GetEntryCollection(user_id, excersize);
     if (!entry_collection) this.MakeEntryCollection(user_id, excersize);

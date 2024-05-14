@@ -22,16 +22,26 @@ export default function post_entry(req: any, res: any): void {
     return res.status(400).send({ success: false, error: `Excersize "${excersize}" does not exist` });
 
   const reps = req.body?.reps;
-  const weight = req.body?.weight;
+  let weight = req.body?.weight;
+  const noSum = req.body?.noSum;
+  const noWeight = req.body?.noWeight;
 
   if (Validate(user_id, "user_id", res)) return;
   if (Validate(excersize, "excersize", res)) return;
   if (Validate(reps, "reps", res)) return;
   if (Validate(weight, "weight", res)) return;
+  if (Validate(noSum, "noSum", res)) return;
+  if (Validate(noWeight, "noWeight", res)) return;
 
   if (!isInteger(reps)) return res.status(400).send({ success: false, error: `"Reps" field must be an integer` });
   if (!isInteger(weight) && !isNumber(weight)) return res.status(400).send({ success: false, error: `"Weight" field must be an integer or float` });
+  if (typeof noSum !== "boolean") return res.status(400).send({ success: false, error: `"noSum" field must be a boolean` });
+  if (typeof noWeight !== "boolean") return res.status(400).send({ success: false, error: `"noWeight" field must be a boolean` });
 
-  Database.AddEntry(user_id as UserID, excersize as TExcersize, parseInt(reps), parseFloat(weight));
+  if (noWeight) {
+    weight = -1;
+  }
+
+  Database.AddEntry(user_id as UserID, excersize as TExcersize, parseInt(reps), parseFloat(weight), noSum);
   return res.status(200).send({ success: true });
 }
