@@ -216,7 +216,7 @@
 
       repsInputElement.classList.remove('is-invalid');
       
-      if (weightInputElement.value === "" || !isNumber(weightInputElement.value) || parseFloat(weightInputElement.value) <= 0.0) {
+      if (!weightInputElement.disabled && (weightInputElement.value === "" || !isNumber(weightInputElement.value) || parseFloat(weightInputElement.value) <= 0.0)) {
         weightInputElement.classList.add('is-invalid');
         return;
       }
