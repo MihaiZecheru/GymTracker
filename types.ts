@@ -27,7 +27,7 @@ export type TExcersize = "Seated Leg Press - Legs" | "Hip Adduction - Legs" | "H
 												| "Knee Flexion - Legs" | "Hip Extension - Legs" | "Knee Flexion Hip Extension - Legs" | "Cycling Motion - Legs" | "Forward Step - Legs" | "Side Step - Legs" | "Step With Arm Curl - Arms" | "Step With Shoulder Press - Shoulders" | "Straight Leg Calf Press - Legs" | "Bent Knee Press - Legs" | "Basic Squat - Legs"
 												| "Squat With Hips Off Back Pad - Legs" | "Split Stance Squat - Legs" | "Squat With One Leg Only - Legs" | "ISOL High Row - Back" | "ISOL Incline Press - Chest"
 												| "Triceps Press - Arms" | "Back Extension - Back" | "Fixed Pulldown - Arms" | "Seated Row - Back" | "Pectoral Fly - Chest" | "Rear Deltoid - Shoulders" | "Assisted Dip - Arms" | "Biceps Curl - Arms" | "Biceps Extension - Arms" | "Push Ups - Arms" | "Pull Ups - Arms" | "Plank - Core" | "Bench Press - Arms"
-												| "Dumbbell Bicep Curl - Arms" | "Dumbbell Behind Head - Arms" | "Dumbbells Lift - Arms" | "Sit Ups - Core" | "Curl Ups - Core" | "Treadmill - Cardio" | "Stair Climb - Cardio" | "Ladder Climb - Cardio" | "Stationary Bike - Cardio";
+												| "Dumbbell Bicep Curl - Arms" | "Dumbbell Behind Head - Arms" | "Dumbbells Lift - Arms" | "Dumbbell Flies - Shoulders" | "Sit Ups - Core" | "Curl Ups - Core" | "Treadmill - Cardio" | "Stair Climb - Cardio" | "Ladder Climb - Cardio" | "Stationary Bike - Cardio";
 
 /**
  * List of excersizes from the TExcersize type for use in the frontend
@@ -39,7 +39,7 @@ export const Excersizes = ["Seated Leg Press - Legs", "Hip Adduction - Legs", "H
 													 "Knee Flexion - Legs", "Hip Extension - Legs", "Knee Flexion Hip Extension - Legs", "Cycling Motion - Legs", "Forward Step - Legs", "Side Step - Legs", "Step With Arm Curl - Arms", "Step With Shoulder Press - Shoulders", "Straight Leg Calf Press - Legs", "Bent Knee Press - Legs", "Basic Squat - Legs",
 													 "Squat With Hips Off Back Pad - Legs", "Split Stance Squat - Legs", "Squat With One Leg Only - Legs", "ISOL High Row - Back", "ISOL Incline Press - Chest",
 													 "Triceps Press - Arms", "Back Extension - Back", "Fixed Pulldown - Arms", "Seated Row - Back", "Pectoral Fly - Chest", "Rear Deltoid - Shoulders", "Assisted Dip - Arms", "Biceps Curl - Arms", "Biceps Extension - Arms", "Push Ups - Arms", "Pull Ups - Arms", "Plank - Core", "Bench Press - Arms",
-													 "Dumbbell Bicep Curl - Arms", "Dumbbell Behind Head - Arms", "Dumbbells Lift - Arms", "Sit Ups - Core", "Curl Ups - Core", "Treadmill - Cardio", "Stair Climb - Cardio", "Ladder Climb - Cardio", "Stationary Bike - Cardio"];
+													 "Dumbbell Bicep Curl - Arms", "Dumbbell Behind Head - Arms", "Dumbbells Lift - Arms", "Dumbbell Flies - Shoulders", "Sit Ups - Core", "Curl Ups - Core", "Treadmill - Cardio", "Stair Climb - Cardio", "Ladder Climb - Cardio", "Stationary Bike - Cardio"];
 Excersizes.sort();
 
 /**
