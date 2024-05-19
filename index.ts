@@ -29,10 +29,6 @@ app.get("/stats", (req: any, res: any) => {
 
 /** Static **/
 
-app.get("/favicon.ico", (req: any, res: any) => {
-  return res.sendFile(__dirname + "/favicon.ico");
-});
-
 app.get("/favicon.png", (req: any, res: any) => {
   return res.sendFile(__dirname + "/favicon.png");
 });
