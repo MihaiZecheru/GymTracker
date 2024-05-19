@@ -307,14 +307,15 @@
     new mdb.Tooltip(document.getElementById("simplify-selection"));
   </script>
 
-  <!-- reset excersize selectionon modal close to prevent glitch with the excersize selection input not clearing -->
+  <!-- reset excersize selection modal close to prevent glitch with the excersize selection input not clearing -->
 
   <script>
     document.getElementById("log-excersize-success-modal").addEventListener("hidden.bs.modal", () => {
-      document.getElementById('select-excersize').value = "NULL";
+      window.location.reload();
     });
+
     document.getElementById("log-excersize-failure-modal").addEventListener("hidden.bs.modal", () => {
-      document.getElementById('select-excersize').value = "NULL";
+      window.location.reload();
     });
   </script>
 
