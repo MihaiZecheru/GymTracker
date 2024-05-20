@@ -27,8 +27,8 @@ export default function get_user_history(req: any, res: any): void {
         return {
           excersize: entry_collection.excersize,
           reps: entry.reps,
-          weight_per_rep: entry.weight_per_rep,
-          weight_sum: entry.weight_sum,
+          weight_per_rep: Number(entry.weight_per_rep.toFixed(2)),
+          weight_sum: Number(entry.weight_sum.toFixed(2)),
           date: format_date(entry.date)
         };
       }));
