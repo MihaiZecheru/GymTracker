@@ -185,6 +185,11 @@ export default abstract class Database {
           throw err;
         }
 
+        // JSON.parse the entries
+        rows.forEach((row: any) => {
+          row.entries = JSON.parse(row.entries);
+        });
+
         resolve(rows as Array<IEntryCollection>);
       });
     });
