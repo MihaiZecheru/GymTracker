@@ -6,7 +6,8 @@ export function check_login() {
 }
 export function logout() {
   deleteCookie('login');
-  window.location.href = '/login';
+  if (window.location.href = '/login')
+    window.location.href = '/login';
 }
 
 export function login(username) {
