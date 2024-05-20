@@ -6,7 +6,7 @@ const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 function format_date(date: number) {
-  const date_obj = new Date(date);
+  const date_obj = new Date(date - 25200);
   return `${weekdays[date_obj.getDay()]}, ${months[date_obj.getMonth()]} ${date_obj.getDate()}, ${date_obj.getFullYear()}`;
 }
 
