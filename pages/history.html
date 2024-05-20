@@ -109,9 +109,9 @@
           
           if (entry.excersize === "Stair Climb - Cardio")
             msg += `${entry.weight_per_rep} steps in ${entry.reps} seconds`;
-          if (entry.excersize === "Treadmill - Cardio")
+          else if (entry.excersize === "Treadmill - Cardio")
             msg += `${entry.weight_per_rep} miles in ${entry.reps} seconds`;
-          if (entry.weight_per_rep == -1 || entry.weight_sum == -1)
+          else if (entry.weight_per_rep == -1 || entry.weight_sum == -1)
             msg += `${entry.reps} reps`;
           else
             msg += `${entry.reps} reps @ ${entry.weight_per_rep} lbs (${entry.weight_sum} total)`;
