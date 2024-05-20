@@ -31,9 +31,16 @@
     <div>
       <div>
         <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-          <a href="/">
-            <img src="/favicon.png" alt="app icon" height="100px" />
-          </a>
+          <div class="dropdown">
+            <img src="/favicon.png" alt="app icon" height="100px" role="button" id="icon-image" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false" style="cursor: hand" />
+            <ul class="dropdown-menu" aria-labelledby="icon-image">
+              <li><a class="dropdown-item" href="/">Home</a></li>
+              <li><a class="dropdown-item" href="/history">History</a></li>
+              <li><a class="dropdown-item disabled" href="/stats">Stats</a></li>
+              <li><a class="dropdown-item" href="/goals">Goals</a></li>
+              <li><a class="dropdown-item" href="/login">Login</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div style="display: flex; justify-content: center; align-items: center;">
@@ -244,6 +251,18 @@
     });
 
     new mdb.Tooltip(document.getElementById("simplify-selection"));
+  </script>
+
+  <!-- Icon link dropdown -->
+
+  <script type="module">
+    const icon_image = document.getElementById('icon-image');
+    const dropdown = new mdb.Dropdown(document.getElementById('icon-image'));
+    
+    icon_image.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropdown.toggle();
+    });
   </script>
 
 </body>
