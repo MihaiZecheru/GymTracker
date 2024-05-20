@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <!-- Comfortaa -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+  <!-- MDB ESSENTIAL -->
+  <link rel="stylesheet" href="../mdbootstrap/css/mdb.min.css" />
+  <!-- MDB PLUGINS -->
+  <link rel="stylesheet" href="../mdbootstrap/plugins/css/all.min.css" />
+  <!-- MDB ESSENTIAL -->
+  <script type="text/javascript" src="../mdbootstrap/js/mdb.min.js" defer></script>
+  <!-- MDB PLUGINS -->
+  <script type="text/javascript" src="../mdbootstrap/plugins/js/all.min.js" defer></script>
+  <title>Gym Tracker | Stats</title>
+</head>
+<body style="height: 100%!important;">
+  <script type="module">
+    import { check_login } from '/scripts/login.js';
+    check_login();
+  </script>
+
+  <script type="module">
+    import { getCookie } from '/scripts/cookies.js';
+    const user = getCookie('login');
+  </script>
+
+  <main style="height: 100%!important; display: flex; justify-content: center; align-items: center;">
+    <div>
+      <div>
+        <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+          <div class="dropdown">
+            <img src="/favicon.png" alt="app icon" height="100px" role="button" id="icon-image" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false" style="cursor: hand" />
+            <ul class="dropdown-menu" aria-labelledby="icon-image">
+              <li><a class="dropdown-item" href="/">Home</a></li>
+              <li><a class="dropdown-item" href="/history">History</a></li>
+              <li><a class="dropdown-item disabled" href="/stats">Stats</a></li>
+              <li><a class="dropdown-item" href="/goals">Goals</a></li>
+              <li><a class="dropdown-item" href="/login">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Icon link dropdown -->
+
+  <script type="module">
+    const icon_image = document.getElementById('icon-image');
+    const dropdown = new mdb.Dropdown(document.getElementById('icon-image'));
+    
+    icon_image.addEventListener('click', (e) => {
+      e.preventDefault();
+      dropdown.toggle();
+    });
+  </script>
+
+</body>
+</html>

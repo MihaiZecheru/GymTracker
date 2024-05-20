@@ -27,6 +27,10 @@ app.get("/stats", (req: any, res: any) => {
   return res.sendFile(__dirname + "/pages/stats.html");
 });
 
+app.get("/history", (req: any, res: any) => {
+  return res.sendFile(__dirname + "/pages/history.html");
+});
+
 /** Static **/
 
 app.get("/favicon.png", (req: any, res: any) => {
