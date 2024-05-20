@@ -26,29 +26,112 @@
     check_login();
   </script>
 
-  <script type="module">
-    import { getCookie } from '/scripts/cookies.js';
-    const user = getCookie('login');
-  </script>
-
-  <main style="height: 100%!important; display: flex; justify-content: center; align-items: center;">
-    <div>
-      <div>
-        <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+  <main style="height: 100%!important; display: flex; justify-content: center;">
+    <div style="width: 100%;">
+      <div style="width: 100%;">
+        <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 2rem;">
           <div class="dropdown">
             <img src="/favicon.png" alt="app icon" height="100px" role="button" id="icon-image" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false" style="cursor: hand" />
             <ul class="dropdown-menu" aria-labelledby="icon-image">
               <li><a class="dropdown-item" href="/">Home</a></li>
-              <li><a class="dropdown-item" href="/history">History</a></li>
-              <li><a class="dropdown-item disabled" href="/stats">Stats</a></li>
+              <li><a class="dropdown-item disabled" href="/history">History</a></li>
+              <li><a class="dropdown-item" href="/stats">Stats</a></li>
               <li><a class="dropdown-item" href="/goals">Goals</a></li>
               <li><a class="dropdown-item" href="/login">Login</a></li>
             </ul>
           </div>
         </div>
+
+        <div id="history" class="shadow-5"></div>
+
+        <style>
+          #history {
+            overflow-y: auto;
+            max-height: calc(100vh - 4rem - 100px);
+            width: 100%;
+          }
+
+          #history .card {
+            margin-bottom: 1rem;
+            width: 100%;
+          }
+
+          #history .card-header {
+            font-size: 1.5rem;
+            color: #6B6A73;
+          }
+
+          .list-group-item span.e {
+            font-size: 1rem;
+            color: var(--mdb-success);
+          }
+
+          .list-group-item span.i {
+            font-size: 1rem;
+            color: #6B6A73;
+          }
+        </style>
       </div>
     </div>
   </main>
+
+  <!-- Populate page with excersize history -->
+
+  <script type="module">
+    import { getCookie } from '/scripts/cookies.js';
+    const user_id = JSON.parse(getCookie('login')).user_id;
+    
+    import { get_history } from '/scripts/history.js';
+    get_history(user_id).then((history) => {
+      const historyElement = document.getElementById('history');
+      
+      Object.entries(history).forEach((kv) => {
+        const day = kv[0];
+        const entries = kv[1];
+        const entryElement = document.createElement('div');
+        
+        // Card title + frame
+        entryElement.innerHTML = `
+          <div class="card">
+            <div class="card-header">${day}</div>
+            <div class="card-body">
+              <ul class="list-group list-group-light">
+                <!-- Excersize entries go here -->
+              </ul>
+            </div>
+          </div>
+        `;
+
+        // Populate list with excersize entries
+
+        entryElement.querySelector("ul").innerHTML = entries.map((entry) => {
+          let msg = `<li class="list-group-item px-3"><center><span class="e">${entry.excersize}</span><br><span class="i">`;
+          
+          if (entry.excersize === "Stair Climb - Cardio")
+            msg += `${entry.weight_per_rep} steps in ${entry.reps} seconds`;
+          if (entry.excersize === "Treadmill - Cardio")
+            msg += `${entry.weight_per_rep} miles in ${entry.reps} seconds`;
+          if (entry.weight_per_rep == -1 || entry.weight_sum == -1)
+            msg += `${entry.reps} reps`;
+          else
+            msg += `${entry.reps} reps @ ${entry.weight_per_rep} lbs (${entry.weight_sum} total)`;
+          return msg + '</span></center></li>';
+        }).join('');
+        historyElement.appendChild(entryElement);
+      });
+    }).catch((error) => {
+      if (error == `No entry collections exist for user with user_id "${user_id}"`) {
+        const historyElement = document.getElementById('history');
+        historyElement.innerHTML = `
+          <div class="card">
+            <div class="card-header">No history found</div>
+          </div>
+        `;
+      } else {
+        // TODO: error handling modal
+      }
+    });
+  </script>
 
   <!-- Icon link dropdown -->
 
