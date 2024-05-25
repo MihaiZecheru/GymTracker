@@ -228,7 +228,8 @@
       const user_id = JSON.parse(getCookie("login")).user_id;
 
       // Have the server make the graph with the given parameters
-      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison).then((graph_url) => { window.location.href = graph_url });
+      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison)
+        .then((graph_url) => { window.location.href = graph_url });
     });
   </script>
 
