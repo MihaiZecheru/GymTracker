@@ -172,8 +172,8 @@
   <!-- Make it so that when you click one of the options in the dropdown, it checks the corresponding checkbox, so your clicks don't have to be as accurate -->
 
   <script>
-    document.querySelectorAll(".form-check").forEach((formCheck) => {
-      formCheck.addEventListener("click", () => {
+    document.querySelectorAll(".form-check-label").forEach((formCheckLabel) => {
+      formCheckLabel.addEventListener("click", () => {
         const checkbox = formCheck.querySelector("input");
         if (checkbox.id === "simplify-selection") return;
         checkbox.checked = !checkbox.checked;
