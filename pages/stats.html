@@ -186,7 +186,7 @@
   <script type="module">
     import { getCookie } from '/scripts/cookies.js';
 
-    async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison) {
+    async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison, width, height) {
       return await fetch(`/api/stats/${user_id}/${excersize}`, {
         method: 'POST',
         headers: {
@@ -196,7 +196,9 @@
           includeReps,
           includeWeight,
           includeWeightSum,
-          includeComparison
+          includeComparison,
+          width,
+          height
         })
       })
       .then((response) => response.json())
@@ -249,7 +251,7 @@
       const user_id = JSON.parse(getCookie("login")).user_id;
 
       // Have the server make the graph with the given parameters
-      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison)
+      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison, window.innerWidth, window.innerHeight)
         .then((graph_url) => { window.location.href = graph_url });
     });
   </script>
@@ -284,6 +286,97 @@
     icon_image.addEventListener('click', (e) => {
       e.preventDefault();
       dropdown.toggle();
+    });
+  </script>
+
+  <!-- disable checkboxes based on excersize -->
+
+  <script type="module">
+    import { WEIGHT_DISABLED_EXCERSIZES } from '/scripts/excersizes.js';
+
+    const selectExcersizeElement = document.getElementById('select-excersize');
+    const graphExcersizeDropdown = document.getElementById('graph-excersize-dropdown');
+
+    graphExcersizeDropdown.addEventListener("click", () => {
+      const excersize = selectExcersizeElement.value;
+      const includeRepsCheckboxElement = document.getElementById('include-reps');
+      const includeWeightCheckboxElement = document.getElementById('include-weight');
+      const includeWeightSumCheckboxElement = document.getElementById('include-weight-sum');
+      const includeComparisonCheckboxElement = document.getElementById('include-comparison');
+
+      if (WEIGHT_DISABLED_EXCERSIZES.includes(excersize)) {
+        // Enable reps
+        includeRepsCheckboxElement.checked = false;
+        includeRepsCheckboxElement.disabled = false;
+        includeRepsCheckboxElement.parentElement.classList.remove('disabled');
+
+        // Disable weight
+        includeWeightCheckboxElement.checked = false;
+        includeWeightCheckboxElement.disabled = true;
+        includeWeightCheckboxElement.parentElement.classList.add('disabled');
+
+        // Disable weight sum
+        includeWeightSumCheckboxElement.checked = false;
+        includeWeightSumCheckboxElement.disabled = true;
+        includeWeightSumCheckboxElement.parentElement.classList.add('disabled');
+
+        // Rename reps
+        includeRepsCheckboxElement.parentElement.querySelector("label").innerText = "Reps";
+
+        // Rename weight
+        includeWeightCheckboxElement.parentElement.querySelector("label").innerText = "Weight";
+
+        // Rename weight sum
+        includeWeightSumCheckboxElement.parentElement.querySelector("label").innerText = "Weight Sum";
+      } else if (excersize.split(" - ")[1] === "Cardio") {
+        // Enable reps
+        includeRepsCheckboxElement.checked = false;
+        includeRepsCheckboxElement.disabled = false;
+        includeRepsCheckboxElement.parentElement.classList.remove('disabled');
+        
+        // Enable weight
+        includeWeightCheckboxElement.checked = false;
+        includeWeightCheckboxElement.disabled = false;
+        includeWeightCheckboxElement.parentElement.classList.remove('disabled');
+
+        // Disable weight sum
+        includeWeightSumCheckboxElement.checked = false;
+        includeWeightSumCheckboxElement.disabled = true;
+        includeWeightSumCheckboxElement.parentElement.classList.add('disabled');
+
+        // Rename reps
+        includeRepsCheckboxElement.parentElement.querySelector("label").innerText = "Duration";
+
+        // Rename weight
+        includeWeightCheckboxElement.parentElement.querySelector("label").innerText = "Distance";
+
+        // Rename weight sum
+        includeWeightSumCheckboxElement.parentElement.querySelector("label").innerText = "Disabled";
+      } else {
+        // Enable reps
+        includeRepsCheckboxElement.checked = false;
+        includeRepsCheckboxElement.disabled = false;
+        includeRepsCheckboxElement.parentElement.classList.remove('disabled');
+
+        // Enable weight
+        includeWeightCheckboxElement.checked = false;
+        includeWeightCheckboxElement.disabled = false;
+        includeWeightCheckboxElement.parentElement.classList.remove('disabled');
+
+        // Enable weight sum
+        includeWeightSumCheckboxElement.checked = false;
+        includeWeightSumCheckboxElement.disabled = false;
+        includeWeightSumCheckboxElement.parentElement.classList.remove('disabled');
+
+        // Rename reps
+        includeRepsCheckboxElement.parentElement.querySelector("label").innerText = "Reps";
+
+        // Rename weight
+        includeWeightCheckboxElement.parentElement.querySelector("label").innerText = "Weight";
+
+        // Rename weight sum
+        includeWeightSumCheckboxElement.parentElement.querySelector("label").innerText = "Weight Sum";
+      }
     });
   </script>
 
