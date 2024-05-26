@@ -1,11 +1,219 @@
 import Database from "../database";
 import { IEntry, IEntryCollection } from "../database-types";
-import { EntryID } from "../types";
+import format_date from "../format_date";
+import { EntryID, TExcersize, UserID } from "../types";
 import Validate from "../validate";
+const QuickChart = require('quickchart-js');
 
-async function make_graph_url(entries: Array<IEntry>, includeReps: boolean, includeWeight: boolean, includeWeightSum: boolean, includeComparison: boolean): Promise<string> {
-  // Todo make an apex chart
-  return "https://quickchart.io/apex-charts/render?config=";
+const WEIGHT_DISABLED_EXCERSIZES = ["Plank - Core", "Sit Ups - Core", "Curl Ups - Core", "Push Ups - Arms", "Pull Ups - Arms", "Core Ball - Core"];
+/**
+{
+  label: 'Comparison',
+  data: entries.map((entry: IEntry) => entry.comparison),
+  borderColor: 'rgb(255, 205, 86)',
+  backgroundColor: 'rgba(255, 205, 86, 0.5)',
+  fill: false,
+  hidden: !includeComparison
+}
+ */
+async function make_graph_url(user_id: UserID, excersize: TExcersize, entries: Array<IEntry>, includeReps: boolean, includeWeight: boolean, includeWeightSum: boolean, includeComparison: boolean, width: number, height: number): Promise<string> {
+  const chart = new QuickChart();
+  const config = {
+    type: 'line',
+    width,
+    height,
+    options: {
+      title: {
+        display: true,
+        text: excersize
+      },
+      legend: {
+        display: true,
+        position: 'left',
+        align: 'start'
+      },
+      scales: {
+        yAxes: [
+          {
+            id: 'y-axis-1',
+            type: 'linear',
+            position: 'left',
+            scaleLabel: {
+              display: true,
+              labelString: 'Reps'
+            },
+            ticks: {
+              beginAtZero: true
+            }
+          },
+          {
+            id: 'y-axis-2',
+            type: 'linear',
+            position: 'right',
+            scaleLabel: {
+              display: true,
+              labelString: 'Weight'
+            },
+            ticks: {
+              beginAtZero: true
+            },
+            gridLines: {
+              drawOnChartArea: false,
+            }
+          },
+          {
+            id: 'y-axis-3',
+            type: 'linear',
+            position: 'right',
+            scaleLabel: {
+              display: true,
+              labelString: 'Weight Sum'
+            },
+            ticks: {
+              beginAtZero: true
+            },
+            gridLines: {
+              drawOnChartArea: false,
+            }
+          },
+        ]
+      }
+    },
+    data: {
+      labels: entries.map((entry: IEntry) => format_date(entry.date)),
+      datasets: [
+        {
+          label: 'Reps',
+          // steppedLine: true,
+          data: entries.map((entry: IEntry) => entry.reps),
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          fill: false,
+          yAxisID: 'y-axis-1',
+          hidden: !includeReps
+        },
+        {
+          label: 'Weight',
+          // steppedLine: true,
+          data: entries.map((entry: IEntry) => entry.weight_per_rep),
+          borderColor: 'rgb(54, 162, 235)',
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          fill: false,
+          yAxisID: 'y-axis-2',
+          hidden: !includeWeight
+        },
+        {
+          label: 'Weight Sum',
+          // steppedLine: true,
+          data: entries.map((entry: IEntry) => entry.weight_sum),
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          fill: false,
+          yAxisID: 'y-axis-3',
+          hidden: !includeWeightSum
+        }
+      ]
+    }
+  };
+
+  // If the excersize is a cardio excersize, change to cardio labels and hide the weight sum
+  if (excersize.split(" - ")[1] === "Cardio") {
+    config.data.datasets[0].label = 'Duration';
+    config.data.datasets[1].label = 'Distance';
+    config.data.datasets[2].hidden = true;
+  }
+
+  // If the excersize is a weight disabled excersize, like core ball, hide the weight and weight sum, as only reps are needed
+  if (WEIGHT_DISABLED_EXCERSIZES.includes(excersize)) {
+    config.data.datasets[1].hidden = true;
+    config.data.datasets[2].hidden = true;
+  }
+
+  // If the weight y-axis is not needed, remove it
+  if (!includeWeight) {
+    config.options.scales.yAxes = config.options.scales.yAxes.filter((axis: any) => axis.id !== 'y-axis-2');
+    config.data.datasets[1].yAxisID = 'y-axis-1'; // it won't be shown anyway, but this needs to be fixed or it will throw an error
+  }
+
+  // If the weight sum y-axis is not needed, remove it
+  if (!includeWeightSum) {
+    config.options.scales.yAxes = config.options.scales.yAxes.filter((axis: any) => axis.id !== 'y-axis-3');
+    config.data.datasets[2].yAxisID = 'y-axis-1'; // it won't be shown anyway, but this needs to be fixed or it will throw an error
+  }
+
+  // Comparisons
+  if (includeComparison) {
+    // Only one field will be compared at a time
+    // @ts-ignore
+    let field;
+    let yAxisID;
+    if (includeReps) {
+      field = "reps";
+      yAxisID = 'y-axis-1';
+    } else if (includeWeight) {
+      field = "weight_per_rep";
+      yAxisID = 'y-axis-2';
+    } else if (includeWeightSum) {
+      field = "weight_sum";
+      yAxisID = 'y-axis-3';
+    }
+
+    const Daria: UserID = "5qJjkBYh" as UserID;
+    const Chris: UserID = "PxU7pwSC" as UserID;
+    const Erin: UserID = "xmILl6vb" as UserID;
+
+    async function getEntries(__user_id__: UserID): Promise<Array<number>> {
+      const excersizeEntryCollection = await Database.GetEntryCollection(__user_id__, excersize);
+      if (!excersizeEntryCollection) return [];
+      return (await Database.GetEntriesWithIDs(excersizeEntryCollection.entries)).map((entry: IEntry) => {
+        // @ts-ignore
+        if (field === "reps") return entry.reps;
+        // @ts-ignore
+        if (field === "weight_per_rep") return entry.weight_per_rep;
+        // @ts-ignore
+        if (field === "weight_sum") return entry.weight_sum;
+      }) as Array<number>;
+    }
+
+    if (user_id !== Chris) {
+      config.data.datasets.push({
+        label: 'Chris',
+        data: await getEntries(Chris),
+        borderColor: 'rgb(144, 238, 144)', // Light green border color
+        backgroundColor: 'rgba(144, 238, 144, 0.5)', // Light green background color
+        fill: false,
+        hidden: false,
+        yAxisID: yAxisID as string
+      });
+    }
+
+    if (user_id !== Erin) {
+      config.data.datasets.push({
+        label: 'Erin',
+        data: await getEntries(Erin),
+        borderColor: 'rgb(139, 0, 0)', // dark red
+        backgroundColor: 'rgba(139, 0, 0, 0.5)', // dark red
+        fill: false,
+        hidden: false,
+        yAxisID: yAxisID as string
+      });
+    }
+
+    if (user_id !== Daria) {
+      config.data.datasets.push({
+        label: 'Daria',
+        data: await getEntries(Daria),
+        borderColor: 'rgb(255, 205, 86)', // light yellow
+        backgroundColor: 'rgba(255, 205, 86, 0.5)', // light yellow
+        fill: false,
+        hidden: false,
+        yAxisID: yAxisID as string
+      });
+    }
+  }
+
+  chart.setConfig(config)
+  return chart.getUrl();
 }
 
 export default function make_graph(req: any, res: any): void {
@@ -15,6 +223,8 @@ export default function make_graph(req: any, res: any): void {
   const includeWeight = req.body?.includeWeight;
   const includeWeightSum = req.body?.includeWeightSum;
   const includeComparison = req.body?.includeComparison;
+  const width = req.body?.width;
+  const height = req.body?.height;
 
   if (Validate(user_id, "user_id", res)) return;
   if (Validate(excersize, "excersize", res)) return;
@@ -22,6 +232,8 @@ export default function make_graph(req: any, res: any): void {
   if (Validate(includeWeight, "includeWeight", res)) return;
   if (Validate(includeWeightSum, "includeWeightSum", res)) return;
   if (Validate(includeComparison, "includeComparison", res)) return;
+  if (Validate(width, "width", res)) return;
+  if (Validate(height, "height", res)) return;
 
   const user = Database.GetUser(user_id);
 	if (user === null) return res.status(400).send({ error: `User with user_id "${user_id}" does not exist.` });
@@ -33,7 +245,7 @@ export default function make_graph(req: any, res: any): void {
 
     const entry_ids: Array<EntryID> = entry_collection.entries;
     Database.GetEntriesWithIDs(entry_ids).then(async (entries: Array<IEntry>) => {
-      return res.send({ graph_url: await make_graph_url(entries, includeReps, includeWeight, includeWeightSum, includeComparison) });
+      return res.send({ graph_url: await make_graph_url(user_id, excersize, entries, includeReps, includeWeight, includeWeightSum, includeComparison, width, height) });
     });
   });
 }

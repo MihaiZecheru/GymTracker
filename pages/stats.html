@@ -62,26 +62,26 @@
             <li><a class="dropdown-item">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="include-reps" />
-                <label class="form-check-label" for="include-reps">Reps</label>
+                <label class="form-check-label user-select-none" for="include-reps" style="width: 100%!important; height: 100%!important">Reps</label>
               </div>
             </a></li>
             <li><a class="dropdown-item">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="include-weight" />
-                <label class="form-check-label" for="include-weight">Weight</label>
+                <label class="form-check-label user-select-none" for="include-weight" style="width: 100%!important; height: 100%!important">Weight</label>
               </div>
             </a></li>
             <li><a class="dropdown-item">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="include-weight-sum" />
-                <label class="form-check-label" for="include-weight-sum">Weight Sum</label>
+                <label class="form-check-label user-select-none" for="include-weight-sum" style="width: 100%!important; height: 100%!important">Weight Sum</label>
               </div>
             </a></li>
             <li><hr class="dropdown-divider" /></li>
             <li><a class="dropdown-item">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="include-comparison" />
-                <label class="form-check-label" for="include-comparison">Compare</label>
+                <label class="form-check-label user-select-none" for="include-comparison" style="width: 100%!important; height: 100%!important">Compare</label>
               </div>
             </a></li>
           </ul>
@@ -169,18 +169,6 @@
     });
   </script>
 
-  <!-- Make it so that when you click one of the options in the dropdown, it checks the corresponding checkbox, so your clicks don't have to be as accurate -->
-
-  <script>
-    document.querySelectorAll(".form-check-label").forEach((formCheckLabel) => {
-      formCheckLabel.addEventListener("click", () => {
-        const checkbox = formCheck.querySelector("input");
-        if (checkbox.id === "simplify-selection") return;
-        checkbox.checked = !checkbox.checked;
-      });
-    });
-  </script>
-
   <!-- validation / graph-excersize btn press -->
 
   <script type="module">
@@ -202,7 +190,13 @@
         })
       })
       .then((response) => response.json())
-      .then((data) => data.graph_url)
+      .then((data) => {
+        if (data.graph_url === undefined) {
+          alert (`No entry collection exists for excersize "${excersize}"`);
+          window.location.reload();
+        }
+        else return data.graph_url
+      })
       .catch((error) => {
         // TODO: add error handling
         if (error === `No entry collection exists for excersize "${excersize}" for user with user_id "${user_id}"`) {
@@ -212,6 +206,7 @@
           alert("An error occurred while trying to make the graph");
           // TODO: add modal
         }
+        window.location.reload();
       });
     }
 
@@ -252,7 +247,7 @@
 
       // Have the server make the graph with the given parameters
       MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison, window.innerWidth, window.innerHeight)
-        .then((graph_url) => { window.location.href = graph_url });
+        .then((graph_url) => { if (graph_url != undefined) window.location.href = graph_url });
     });
   </script>
 
@@ -376,6 +371,49 @@
 
         // Rename weight sum
         includeWeightSumCheckboxElement.parentElement.querySelector("label").innerText = "Weight Sum";
+      }
+    });
+  </script>
+
+  <!-- Allow only one option to be graphed at a time if 'comparison' is checked -->
+
+  <script>
+    const includeReps = document.getElementById('include-reps');
+    const includeWeight = document.getElementById('include-weight');
+    const includeWeightSum = document.getElementById('include-weight-sum');
+    const includeComparison = document.getElementById('include-comparison');
+
+    includeComparison.addEventListener('input', () => {
+      let amountChecked = 0;
+      if (includeReps.checked) amountChecked++;
+      if (includeWeight.checked) amountChecked++;
+      if (includeWeightSum.checked) amountChecked++;
+
+      if (includeComparison.checked && amountChecked > 1) {
+        includeReps.checked = false;
+        includeWeight.checked = false;
+        includeWeightSum.checked = false;
+      }
+    });
+
+    includeReps.addEventListener('input', () => {
+      if (includeReps.checked && includeComparison.checked) {
+        includeWeight.checked = false;
+        includeWeightSum.checked = false;
+      }
+    });
+
+    includeWeight.addEventListener('input', () => {
+      if (includeWeight.checked && includeComparison.checked) {
+        includeReps.checked = false;
+        includeWeightSum.checked = false;
+      }
+    });
+
+    includeWeightSum.addEventListener('input', () => {
+      if (includeWeightSum.checked && includeComparison.checked) {
+        includeReps.checked = false;
+        includeWeight.checked = false;
       }
     });
   </script>
