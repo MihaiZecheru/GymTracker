@@ -3,5 +3,8 @@
     "@types/node": "^20.12.8",
     "express": "^4.19.2",
     "sqlite3": "^5.1.7"
+  },
+  "dependencies": {
+    "quickchart-js": "^3.1.3"
   }
 }
