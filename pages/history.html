@@ -84,8 +84,16 @@
     import { get_history } from '/scripts/history.js';
     get_history(user_id).then((history) => {
       const historyElement = document.getElementById('history');
+      const kvEntries = Object.entries(history);
       
-      Object.entries(history).forEach((kv) => {
+      const sortedKvEntries = kvEntries.sort((a, b) => {
+        const aDate = new Date(a[0]);
+        const bDate = new Date(b[0]);
+        // the dates being compared cannot be the same because that's how they're compiled in the first place, before they're fetched
+        return aDate > bDate ? -1 : 1;
+      });
+
+      sortedKvEntries.forEach((kv) => {
         const day = kv[0];
         const entries = kv[1];
         const entryElement = document.createElement('div');
