@@ -217,8 +217,15 @@
       selectExcersizeElement.classList.remove('is-invalid');
 
       if (repsInputElement.value === "" || !isNumber(repsInputElement.value) || parseFloat(repsInputElement.value) <= 0.0 || Number.isInteger(repsInputElement.value)) {
-        repsInputElement.classList.add('is-invalid');
-        return;
+        // Check if the inputted value is formatted as follows: 00:00 or 0:00
+        const isMatch = new RegExp(/^\d+\:\d{2}$/g).test(repsInputElement.value);
+        if (isMatch) {
+          const [minutes, seconds] = repsInputElement.value.split(":");
+          repsInputElement.value = parseInt(minutes) * 60 + parseInt(seconds);
+        } else {
+          repsInputElement.classList.add('is-invalid');
+          return;
+        }
       }
 
       repsInputElement.classList.remove('is-invalid');
@@ -256,6 +263,7 @@
       const group = excersize.split(" - ")[1];
       
       const repsInfo = document.getElementById('rep-info');
+      const repsInputElement = document.getElementById('reps-input');
       const weightInfo = document.getElementById('weight-info');
       const repsInputLabel = document.getElementById('reps-input-label');
       const weightInputLabel = document.getElementById('weight-input-label');
@@ -264,11 +272,13 @@
       // Cardio needs special inputs
       if (group === "Cardio") {
         repsInfo.innerHTML = "<b>Seconds</b>, whole number";
+        repsInputElement.type = "text";
         weightInfo.innerHTML = "<b>Miles</b>, whole number or float";
         repsInputLabel.innerText = "Duration";
         weightInputLabel.innerText = "Distance";
       } else {
         repsInfo.innerHTML = "Add up reps <b>across sets</b>";
+        repsInputElement.type = "number";
         weightInfo.innerHTML = "Weight (<b>lbs</b>) used for one rep";
         repsInputLabel.innerText = "Reps";
         weightInputLabel.innerText = "Weight";
@@ -276,6 +286,7 @@
 
       if (excersize === "Stair Climb - Cardio") {
         repsInfo.innerHTML = "<b>Seconds</b>, whole number";
+        repsInputElement.type = "text";
         weightInfo.innerHTML = "<b>Steps</b>, whole number";
         repsInputLabel.innerText = "Duration";
         weightInputLabel.innerText = "Steps";
@@ -286,6 +297,7 @@
       // if (excersize in WEIGHT_DISABLED_EXCERSIZES) {
       if (WEIGHT_DISABLED_EXCERSIZES.includes(excersize)) {
         weightInfo.innerHTML = "No weight needed";
+        repsInputElement.type = "number";
         weightInput.disabled = true;
       } else {
         weightInput.disabled = false;
