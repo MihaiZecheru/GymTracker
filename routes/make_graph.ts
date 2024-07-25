@@ -119,9 +119,14 @@ async function make_graph_url(user_id: UserID, excersize: TExcersize, entries: A
 
   // If the excersize is a cardio excersize, change to cardio labels and hide the weight sum
   if (excersize.split(" - ")[1] === "Cardio") {
+    // Change the legend/key labels
     config.data.datasets[0].label = 'Duration';
     config.data.datasets[1].label = 'Distance';
     config.data.datasets[2].hidden = true;
+    
+    // Change the y-axis labels
+    config.options.scales.yAxes[0].scaleLabel.labelString = 'Duration';
+    config.options.scales.yAxes[1].scaleLabel.labelString = 'Distance';
   }
 
   // If the excersize is a weight disabled excersize, like core ball, hide the weight and weight sum, as only reps are needed
