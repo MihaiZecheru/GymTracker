@@ -26,12 +26,23 @@
     check_login();
   </script>
 
+  <style>
+    .no-highlight {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+  </style>
+
   <main style="height: 100%!important; display: flex; justify-content: center;">
     <div style="width: 100%;">
       <div style="width: 100%;">
         <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 2rem;">
           <div class="dropdown">
-            <img src="/favicon.png" alt="app icon" height="100px" role="button" id="icon-image" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false" style="cursor: hand" />
+            <img src="/favicon.png" class="no-highlight" alt="app icon" height="100px" role="button" id="icon-image" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false" style="cursor: hand" />
             <ul class="dropdown-menu" aria-labelledby="icon-image">
               <li><a class="dropdown-item" href="/">Home</a></li>
               <li><a class="dropdown-item disabled" href="/history">History</a></li>
