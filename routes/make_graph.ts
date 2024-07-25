@@ -16,6 +16,7 @@ const WEIGHT_DISABLED_EXCERSIZES = ["Plank - Core", "Sit Ups - Core", "Curl Ups 
   hidden: !includeComparison
 }
  */
+// includeComparison will always be false (updated to disable comparison feature 7/25/2024)
 async function make_graph_url(user_id: UserID, excersize: TExcersize, entries: Array<IEntry>, includeReps: boolean, includeWeight: boolean, includeWeightSum: boolean, includeComparison: boolean, width: number, height: number): Promise<string> {
   const chart = new QuickChart();
   const config = {
@@ -141,77 +142,6 @@ async function make_graph_url(user_id: UserID, excersize: TExcersize, entries: A
     config.data.datasets[2].yAxisID = 'y-axis-1'; // it won't be shown anyway, but this needs to be fixed or it will throw an error
   }
 
-  // Comparisons
-  if (includeComparison) {
-    // Only one field will be compared at a time
-    // @ts-ignore
-    let field;
-    let yAxisID;
-    if (includeReps) {
-      field = "reps";
-      yAxisID = 'y-axis-1';
-    } else if (includeWeight) {
-      field = "weight_per_rep";
-      yAxisID = 'y-axis-2';
-    } else if (includeWeightSum) {
-      field = "weight_sum";
-      yAxisID = 'y-axis-3';
-    }
-
-    const Daria: UserID = "5qJjkBYh" as UserID;
-    const Chris: UserID = "PxU7pwSC" as UserID;
-    const Erin: UserID = "xmILl6vb" as UserID;
-
-    async function getEntries(__user_id__: UserID): Promise<Array<number>> {
-      const excersizeEntryCollection = await Database.GetEntryCollection(__user_id__, excersize);
-      if (!excersizeEntryCollection) return [];
-      return (await Database.GetEntriesWithIDs(excersizeEntryCollection.entries)).map((entry: IEntry) => {
-        // @ts-ignore
-        if (field === "reps") return entry.reps;
-        // @ts-ignore
-        if (field === "weight_per_rep") return entry.weight_per_rep;
-        // @ts-ignore
-        if (field === "weight_sum") return entry.weight_sum;
-      }) as Array<number>;
-    }
-
-    if (user_id !== Chris) {
-      config.data.datasets.push({
-        label: 'Chris',
-        data: await getEntries(Chris),
-        borderColor: 'rgb(144, 238, 144)', // Light green border color
-        backgroundColor: 'rgba(144, 238, 144, 0.5)', // Light green background color
-        fill: false,
-        hidden: false,
-        yAxisID: yAxisID as string
-      });
-    }
-
-    if (user_id !== Erin) {
-      config.data.datasets.push({
-        label: 'Erin',
-        data: await getEntries(Erin),
-        borderColor: 'rgb(139, 0, 0)', // dark red
-        backgroundColor: 'rgba(139, 0, 0, 0.5)', // dark red
-        fill: false,
-        hidden: false,
-        yAxisID: yAxisID as string
-      });
-    }
-
-    if (user_id !== Daria) {
-      config.data.datasets.push({
-        label: 'Daria',
-        data: await getEntries(Daria),
-        borderColor: 'rgb(255, 205, 86)', // light yellow
-        backgroundColor: 'rgba(255, 205, 86, 0.5)', // light yellow
-        fill: false,
-        hidden: false,
-        yAxisID: yAxisID as string
-      });
-    }
-  }
-
   chart.setConfig(config)
   return chart.getUrl();
 }
@@ -222,7 +152,6 @@ export default function make_graph(req: any, res: any): void {
   const includeReps = req.body?.includeReps;
   const includeWeight = req.body?.includeWeight;
   const includeWeightSum = req.body?.includeWeightSum;
-  const includeComparison = req.body?.includeComparison;
   const width = req.body?.width;
   const height = req.body?.height;
 
@@ -231,7 +160,6 @@ export default function make_graph(req: any, res: any): void {
   if (Validate(includeReps, "includeReps", res)) return;
   if (Validate(includeWeight, "includeWeight", res)) return;
   if (Validate(includeWeightSum, "includeWeightSum", res)) return;
-  if (Validate(includeComparison, "includeComparison", res)) return;
   if (Validate(width, "width", res)) return;
   if (Validate(height, "height", res)) return;
 
@@ -245,7 +173,7 @@ export default function make_graph(req: any, res: any): void {
 
     const entry_ids: Array<EntryID> = entry_collection.entries;
     Database.GetEntriesWithIDs(entry_ids).then(async (entries: Array<IEntry>) => {
-      return res.send({ graph_url: await make_graph_url(user_id, excersize, entries, includeReps, includeWeight, includeWeightSum, includeComparison, width, height) });
+      return res.send({ graph_url: await make_graph_url(user_id, excersize, entries, includeReps, includeWeight, includeWeightSum, false, width, height) });
     });
   });
 }

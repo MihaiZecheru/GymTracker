@@ -77,13 +77,6 @@
                 <label class="form-check-label user-select-none" for="include-weight-sum" style="width: 100%!important; height: 100%!important">Weight Sum</label>
               </div>
             </a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="include-comparison" />
-                <label class="form-check-label user-select-none" for="include-comparison" style="width: 100%!important; height: 100%!important">Compare</label>
-              </div>
-            </a></li>
           </ul>
         </div>
       </div>
@@ -174,7 +167,7 @@
   <script type="module">
     import { getCookie } from '/scripts/cookies.js';
 
-    async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison, width, height) {
+    async function MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, width, height) {
       return await fetch(`/api/stats/${user_id}/${excersize}`, {
         method: 'POST',
         headers: {
@@ -184,7 +177,7 @@
           includeReps,
           includeWeight,
           includeWeightSum,
-          includeComparison,
+          includeComparison: false,
           width,
           height
         })
@@ -217,7 +210,6 @@
       const includeRepsCheckboxElement = document.getElementById('include-reps');
       const includeWeightCheckboxElement = document.getElementById('include-weight');
       const includeWeightSumCheckboxElement = document.getElementById('include-weight-sum');
-      const includeComparisonCheckboxElement = document.getElementById('include-comparison');
 
       // excersize-selection Validation
       if (selectExcersizeElement.value === "NULL") {
@@ -234,7 +226,6 @@
       const includeReps = includeRepsCheckboxElement.checked;
       const includeWeight = includeWeightCheckboxElement.checked;
       const includeWeightSum = includeWeightSumCheckboxElement.checked;
-      const includeComparison = includeComparisonCheckboxElement.checked;
 
       if (!includeReps && !includeWeight && !includeWeightSum) {
         new mdb.Modal(document.getElementById('graph-excersize-modal')).show();
@@ -246,7 +237,7 @@
       const user_id = JSON.parse(getCookie("login")).user_id;
 
       // Have the server make the graph with the given parameters
-      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, includeComparison, window.innerWidth, window.innerHeight)
+      MakeGraph(user_id, excersize, includeReps, includeWeight, includeWeightSum, window.innerWidth, window.innerHeight)
         .then((graph_url) => { if (graph_url != undefined) window.location.href = graph_url });
     });
   </script>
@@ -297,7 +288,6 @@
       const includeRepsCheckboxElement = document.getElementById('include-reps');
       const includeWeightCheckboxElement = document.getElementById('include-weight');
       const includeWeightSumCheckboxElement = document.getElementById('include-weight-sum');
-      const includeComparisonCheckboxElement = document.getElementById('include-comparison');
 
       if (WEIGHT_DISABLED_EXCERSIZES.includes(excersize)) {
         // Enable reps
@@ -371,49 +361,6 @@
 
         // Rename weight sum
         includeWeightSumCheckboxElement.parentElement.querySelector("label").innerText = "Weight Sum";
-      }
-    });
-  </script>
-
-  <!-- Allow only one option to be graphed at a time if 'comparison' is checked -->
-
-  <script>
-    const includeReps = document.getElementById('include-reps');
-    const includeWeight = document.getElementById('include-weight');
-    const includeWeightSum = document.getElementById('include-weight-sum');
-    const includeComparison = document.getElementById('include-comparison');
-
-    includeComparison.addEventListener('input', () => {
-      let amountChecked = 0;
-      if (includeReps.checked) amountChecked++;
-      if (includeWeight.checked) amountChecked++;
-      if (includeWeightSum.checked) amountChecked++;
-
-      if (includeComparison.checked && amountChecked > 1) {
-        includeReps.checked = false;
-        includeWeight.checked = false;
-        includeWeightSum.checked = false;
-      }
-    });
-
-    includeReps.addEventListener('input', () => {
-      if (includeReps.checked && includeComparison.checked) {
-        includeWeight.checked = false;
-        includeWeightSum.checked = false;
-      }
-    });
-
-    includeWeight.addEventListener('input', () => {
-      if (includeWeight.checked && includeComparison.checked) {
-        includeReps.checked = false;
-        includeWeightSum.checked = false;
-      }
-    });
-
-    includeWeightSum.addEventListener('input', () => {
-      if (includeWeightSum.checked && includeComparison.checked) {
-        includeReps.checked = false;
-        includeWeight.checked = false;
       }
     });
   </script>
